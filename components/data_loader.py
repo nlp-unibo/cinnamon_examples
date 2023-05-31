@@ -18,7 +18,7 @@ class ExampleLoader(DataLoader):
         super().__init__(**kwargs)
 
         # Update directory paths
-        file_manager = FileManager.retrieve_built_component_from_key(self.file_manager_regr_info)
+        file_manager = FileManager.retrieve_built_component_from_key(self.file_manager_key)
 
         self.download_path = file_manager.run(filepath=self.download_directory).joinpath(self.download_filename)
         self.extraction_path = self.download_path.parents[0]

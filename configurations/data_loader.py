@@ -18,7 +18,7 @@ class ExampleLoaderConfig(DataLoaderConfig):
         config.has_val_split = False
         config.name = 'example_dataset'
 
-        config.add_short(name='file_manager_regr_info',
+        config.add_short(name='file_manager_key',
                          value=RegistrationKey(
                              name='file_manager',
                              tags={'default'},
