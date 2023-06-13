@@ -3,7 +3,6 @@ from typing import AnyStr, Union
 
 from cinnamon_core.core.registry import Registry, RegistrationKey, register
 from cinnamon_generic.configurations.data_loader import DataLoaderConfig
-
 from components.data_loader import ExampleLoader
 
 
@@ -51,9 +50,9 @@ class ExampleLoaderConfig(DataLoaderConfig):
 
 @register
 def register_data_loaders():
-    Registry.register_and_bind(configuration_class=ExampleLoaderConfig,
-                               component_class=ExampleLoader,
-                               name='data_loader',
-                               tags={'imdb'},
-                               is_default=True,
-                               namespace='examples')
+    Registry.add_and_bind(config_class=ExampleLoaderConfig,
+                          component_class=ExampleLoader,
+                          name='data_loader',
+                          tags={'imdb'},
+                          is_default=True,
+                          namespace='examples')

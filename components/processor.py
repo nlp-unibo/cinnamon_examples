@@ -1,9 +1,12 @@
 import itertools
+from typing import Optional
 
-from cinnamon_core.core.data import FieldDict
-from cinnamon_generic.components.processor import Processor
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import LabelEncoder
+
+from cinnamon_core.core.data import FieldDict
+from cinnamon_generic.components.pipeline import OrderedPipeline
+from cinnamon_generic.components.processor import Processor
 
 
 class TfIdfProcessor(Processor):
@@ -45,15 +48,47 @@ class LabelProcessor(Processor):
             data: FieldDict,
             is_training_data: bool = False
     ):
-        if is_training_data and data is not None:
-            label_fields = data.search_by_tag(tags='label')
-            for field_name, field in label_fields.items():
-                field_encoder = LabelEncoder() if field_name not in self.encoders else self.encoders[field_name]
-                field_encoder.fit(field)
-                self.encoders[field_name] = field_encoder
-
         label_fields = data.search_by_tag(tags='label')
         for field_name, field in label_fields.items():
-            field_encoder = self.encoders[field_name]
-            data[field_name] = field_encoder.transform(field)
+            field_encoder = self.encoders.get(field_name, LabelEncoder())
+            data[field_name] = field_encoder.fit_transform(field) \
+                if is_training_data else field_encoder.transform(field)
+            if field_name not in self.encoders and is_training_data:
+                self.encoders[field_name] = field_encoder
+
+        return data
+
+
+class MLProcessor(Processor):
+
+    def process(
+            self,
+            data: FieldDict,
+            is_training_data: bool = False
+    ) -> FieldDict:
+        return_dict = FieldDict()
+
+        text_data = list(data.search_by_tag(tags='text').values())[0]
+        return_dict.add_short(name='X',
+                              value=text_data)
+
+        label_data = data.search_by_tag(tags='label')
+        if len(label_data):
+            label_data = list(label_data.values())[0]
+            return_dict.add_short(name='y',
+                                  value=label_data)
+
+        return return_dict
+
+
+class ProcessorPipeline(OrderedPipeline, Processor):
+
+    def run(
+            self,
+            data: Optional[FieldDict] = None,
+            is_training_data: bool = False
+    ) -> FieldDict:
+        components = self.get_pipeline()
+        for component in components:
+            data = component.run(data=data, is_training_data=is_training_data)
         return data

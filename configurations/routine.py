@@ -1,9 +1,9 @@
 from cinnamon_core.core.registry import Registry, RegistrationKey, register
 from cinnamon_generic.components.routine import TrainAndTestRoutine
-from cinnamon_generic.configurations.routine import TrainAndTestRoutineConfig
+from cinnamon_generic.configurations.routine import RoutineConfig
 
 
-class ExampleRoutineConfig(TrainAndTestRoutineConfig):
+class ExampleRoutineConfig(RoutineConfig):
 
     @classmethod
     def get_default(
@@ -15,8 +15,11 @@ class ExampleRoutineConfig(TrainAndTestRoutineConfig):
                                              tags={'imdb', 'default'},
                                              namespace='examples')
         config.pre_processor = RegistrationKey(name='processor',
-                                               tags={'tf-idf', 'label'},
+                                               tags={'tf-idf', 'label', 'ml'},
                                                namespace='examples')
+        config.data_splitter = RegistrationKey(name='data_splitter',
+                                               tags={'sklearn', 'tt'},
+                                               namespace='generic')
         config.model = RegistrationKey(name='model',
                                        tags={'svm', 'default'},
                                        namespace='examples')
@@ -31,8 +34,6 @@ class ExampleRoutineConfig(TrainAndTestRoutineConfig):
                                                    namespace='generic')
 
         config.seeds = [15000, 42]
-        config.has_val_split = False
-        config.has_test_split = True
 
         return config
 

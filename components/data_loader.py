@@ -3,6 +3,7 @@ from typing import Tuple, Optional, Iterable
 from urllib import request
 
 import pandas as pd
+
 from cinnamon_core.core.data import FieldDict
 from cinnamon_core.utility import logging_utility
 from cinnamon_generic.components.data_loader import DataLoader

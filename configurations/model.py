@@ -2,7 +2,6 @@ from typing import Optional
 
 from cinnamon_core.core.configuration import Configuration
 from cinnamon_core.core.registry import Registry, register
-
 from components.model import ExampleModel
 
 
@@ -34,9 +33,9 @@ class ExampleModelConfig(Configuration):
 
 @register
 def register_models():
-    Registry.register_and_bind(configuration_class=ExampleModelConfig,
-                               component_class=ExampleModel,
-                               name='model',
-                               tags={'svm'},
-                               is_default=True,
-                               namespace='examples')
+    Registry.add_and_bind(config_class=ExampleModelConfig,
+                          component_class=ExampleModel,
+                          name='model',
+                          tags={'svm'},
+                          is_default=True,
+                          namespace='examples')

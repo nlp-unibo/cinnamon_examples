@@ -11,8 +11,9 @@ if __name__ == '__main__':
 
     logging_utility.logger.info(f'Directory: {directory}')
 
-    routine_train(name='routine',
-                  tags={'train_and_test'},
-                  namespace='examples',
-                  serialize=True,
-                  run_name='test')
+    result = routine_train(name='routine',
+                           tags={'train_and_test'},
+                           namespace='examples',
+                           serialize=True,
+                           run_name='test')
+    logging_utility.logger.info(result)

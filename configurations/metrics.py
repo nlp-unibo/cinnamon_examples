@@ -1,8 +1,10 @@
+from sklearn.metrics import f1_score, accuracy_score
+
 from cinnamon_core.core.configuration import add_variant, supports_variants
 from cinnamon_core.core.registry import Registry, register
-from cinnamon_generic.components.metrics import MetricPipeline, LambdaMetric
-from cinnamon_generic.configurations.metrics import MetricPipelineConfig, LambdaMetricConfig
-from sklearn.metrics import f1_score, accuracy_score
+from cinnamon_generic.components.metrics import LambdaMetric, MetricPipeline
+from cinnamon_generic.configurations.metrics import LambdaMetricConfig
+from cinnamon_generic.configurations.pipeline import PipelineConfig
 
 
 @supports_variants
@@ -43,19 +45,17 @@ class ExampleLambdaMetricConfig(LambdaMetricConfig):
 
 @register
 def register_metrics_configurations():
-    variant_regr_keys = Registry.register_and_bind_configuration_variants(configuration_class=ExampleLambdaMetricConfig,
-                                                                          component_class=LambdaMetric,
-                                                                          name='metrics',
-                                                                          namespace='examples')
+    metric_keys = Registry.register_and_bind_variants(config_class=ExampleLambdaMetricConfig,
+                                                 component_class=LambdaMetric,
+                                                 name='metrics',
+                                                 namespace='examples')
 
-    Registry.register_and_bind(configuration_class=MetricPipelineConfig,
-                               configuration_constructor=MetricPipelineConfig.get_delta_class_copy,
-                               configuration_kwargs={
-                                   'params_dict': {
-                                       'metrics': variant_regr_keys
-                                   }
-                               },
-                               component_class=MetricPipeline,
-                               name='metrics',
-                               tags={'binary_f1', 'macro_f1', 'accuracy'},
-                               namespace='examples')
+    Registry.add_and_bind(config_class=PipelineConfig,
+                          config_constructor=PipelineConfig.from_keys,
+                          config_kwargs={
+                              'keys': metric_keys
+                          },
+                          component_class=MetricPipeline,
+                          name='metrics',
+                          tags={'binary_f1', 'macro_f1', 'accuracy'},
+                          namespace='examples')

@@ -10,8 +10,9 @@ if __name__ == '__main__':
                    registrations_to_file=True)
 
     logging_utility.logger.info(f'Directory: {directory}')
-    run_component(name='data_loader',
-                  tags={'default', 'imdb'},
-                  namespace='examples',
-                  run_name='imdb_loader_test',
-                  serialize=True)
+    result, _ = run_component(name='data_loader',
+                              tags={'default', 'imdb'},
+                              namespace='examples',
+                              run_name='imdb_loader_test',
+                              serialize=True)
+    logging_utility.logger.info(result)

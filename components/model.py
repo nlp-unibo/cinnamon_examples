@@ -1,12 +1,14 @@
 from pathlib import Path
-from typing import AnyStr, Any, Dict, Optional, Iterable, Union
+from typing import AnyStr, Any, Optional, Union
+
+from sklearn.svm import SVC
 
 from cinnamon_core.core.data import FieldDict
 from cinnamon_core.utility.pickle_utility import save_pickle, load_pickle
-from cinnamon_generic.components.callback import CallbackPipeline
-from cinnamon_generic.components.metrics import MetricPipeline
+from cinnamon_generic.components.callback import Callback
+from cinnamon_generic.components.metrics import Metric
 from cinnamon_generic.components.model import Model
-from sklearn.svm import SVC
+from cinnamon_generic.components.processor import Processor
 
 
 class ExampleModel(Model):
@@ -26,10 +28,10 @@ class ExampleModel(Model):
         filepath = Path(filepath) if type(filepath) != Path else filepath
         return load_pickle(filepath=filepath.joinpath('model.pkl'))
 
-    def build_model(
+    def build(
             self,
-            processor_state: FieldDict,
-            callbacks: Optional[CallbackPipeline] = None
+            processor: Processor,
+            callbacks: Optional[Callback] = None
     ):
         self.model = SVC(C=self.C,
                          kernel=self.kernel,
@@ -38,57 +40,52 @@ class ExampleModel(Model):
     def predict(
             self,
             data: FieldDict,
-            callbacks: Optional[CallbackPipeline] = None,
-            metrics: Optional[MetricPipeline] = None
+            callbacks: Optional[Callback] = None,
+            metrics: Optional[Metric] = None,
+            model_processor: Optional[Processor] = None
     ) -> FieldDict:
-        model_data = self.get_model_data(data=data, with_labels=True)
-        predictions = self.model.predict(X=model_data['X'])
+        predictions = self.model.predict(X=data.X)
 
         return_field = FieldDict()
         return_field.add_short(name='predictions',
                                value=predictions)
 
-        if 'y' in model_data and metrics is not None:
+        if 'y' in data and metrics is not None:
             metrics_result = metrics.run(y_pred=predictions,
-                                         y_true=model_data['y'])
+                                         y_true=data.y,
+                                         as_dict=True)
             return_field.add_short(name='metrics',
                                    value=metrics_result)
 
         return return_field
 
-    def get_model_data(
-            self,
-            data: FieldDict,
-            with_labels: bool = False
-    ) -> Dict[str, Iterable]:
-        return_data = dict()
-
-        text_data = list(data.search_by_tag(tags='text').values())[0]
-        return_data['X'] = text_data
-
-        if with_labels:
-            label_data = data.search_by_tag(tags='label')
-            if len(label_data):
-                label_data = list(label_data.values())[0]
-                return_data['y'] = label_data
-
-        return return_data
-
     def fit(
             self,
             train_data: FieldDict,
             val_data: Optional[FieldDict] = None,
-            metrics: Optional[MetricPipeline] = None,
-            callbacks: Optional[CallbackPipeline] = None
+            metrics: Optional[Metric] = None,
+            callbacks: Optional[Callback] = None,
+            model_processor: Optional[Processor] = None
     ) -> FieldDict:
-        self.model.fit(**self.get_model_data(data=train_data, with_labels=True))
+        self.model.fit(X=train_data.X, y=train_data.y)
 
         return_field = FieldDict()
 
         if val_data is not None:
-            val_info = self.evaluate_and_predict(data=val_data,
-                                                 callbacks=callbacks,
-                                                 metrics=metrics)
+            val_info = self.evaluate(data=val_data,
+                                     callbacks=callbacks,
+                                     metrics=metrics)
             return_field.add_short(name='val_info',
                                    value=val_info)
         return return_field
+
+    def evaluate(
+            self,
+            data: FieldDict,
+            callbacks: Optional[Callback] = None,
+            metrics: Optional[Metric] = None,
+            model_processor: Optional[Processor] = None
+    ) -> FieldDict:
+        return self.predict(data=data,
+                            callbacks=callbacks,
+                            metrics=metrics)
