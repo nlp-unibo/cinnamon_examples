@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import AnyStr, Any, Optional, Union
+from typing import AnyStr, Any, Optional, Union, Dict
 
 from sklearn.svm import SVC
 
@@ -42,20 +42,24 @@ class ExampleModel(Model):
             data: FieldDict,
             callbacks: Optional[Callback] = None,
             metrics: Optional[Metric] = None,
-            model_processor: Optional[Processor] = None
+            model_processor: Optional[Processor] = None,
+            suffixes: Optional[Dict] = None
     ) -> FieldDict:
         predictions = self.model.predict(X=data.X)
 
         return_field = FieldDict()
-        return_field.add_short(name='predictions',
-                               value=predictions)
+        return_field.add(name='predictions',
+                         value=predictions)
+        if suffixes is not None:
+            return_field.add(name='suffixes',
+                             value=suffixes)
 
         if 'y' in data and metrics is not None:
             metrics_result = metrics.run(y_pred=predictions,
                                          y_true=data.y,
                                          as_dict=True)
-            return_field.add_short(name='metrics',
-                                   value=metrics_result)
+            return_field.add(name='metrics',
+                             value=metrics_result)
 
         return return_field
 
@@ -75,8 +79,8 @@ class ExampleModel(Model):
             val_info = self.evaluate(data=val_data,
                                      callbacks=callbacks,
                                      metrics=metrics)
-            return_field.add_short(name='val_info',
-                                   value=val_info)
+            return_field.add(name='val_info',
+                             value=val_info)
         return return_field
 
     def evaluate(
@@ -84,8 +88,11 @@ class ExampleModel(Model):
             data: FieldDict,
             callbacks: Optional[Callback] = None,
             metrics: Optional[Metric] = None,
-            model_processor: Optional[Processor] = None
+            model_processor: Optional[Processor] = None,
+            suffixes: Optional[Dict] = None
     ) -> FieldDict:
         return self.predict(data=data,
                             callbacks=callbacks,
-                            metrics=metrics)
+                            metrics=metrics,
+                            model_processor=model_processor,
+                            suffixes=suffixes)

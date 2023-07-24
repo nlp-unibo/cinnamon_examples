@@ -8,9 +8,15 @@ from cinnamon_generic.components.model import Model
 from cinnamon_generic.components.processor import Processor, ProcessorPipeline
 
 if __name__ == '__main__':
-    directory = Path(__file__).parent.parent.resolve()
+    """
+    In this demo script, we manually define a simple code pipeline:
+    - Data loading
+    - Data pre-processing
+    - Model definition
+    - Model training
+    """
 
-    setup_registry(directory=directory,
+    setup_registry(directory=Path(__file__).parent.parent.resolve(),
                    registrations_to_file=True)
 
     # DataLoader (dl)

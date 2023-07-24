@@ -5,12 +5,13 @@ from cinnamon_generic.api.commands import setup_registry
 from cinnamon_generic.components.data_loader import DataLoader
 
 if __name__ == '__main__':
-    directory = Path(__file__).parent.parent.resolve()
+    """
+    In this demo script, we retrieve and build our IMDB data loader.
+    Once built, we run the data loader to load the IMDB dataset and print it for visualization purposes.
+    """
 
-    setup_registry(directory=directory,
+    setup_registry(directory=Path(__file__).parent.parent.resolve(),
                    registrations_to_file=True)
-
-    logging_utility.logger.info(f'Directory: {directory}')
 
     loader = DataLoader.build_component(name='data_loader',
                                         tags={'default', 'imdb'},

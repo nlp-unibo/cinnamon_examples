@@ -69,14 +69,14 @@ class MLProcessor(Processor):
         return_dict = FieldDict()
 
         text_data = list(data.search_by_tag(tags='text').values())[0]
-        return_dict.add_short(name='X',
-                              value=text_data)
+        return_dict.add(name='X',
+                        value=text_data)
 
         label_data = data.search_by_tag(tags='label')
         if len(label_data):
             label_data = list(label_data.values())[0]
-            return_dict.add_short(name='y',
-                                  value=label_data)
+            return_dict.add(name='y',
+                            value=label_data)
 
         return return_dict
 

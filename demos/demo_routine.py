@@ -5,12 +5,13 @@ from cinnamon_generic.api.commands import setup_registry
 from cinnamon_generic.components.routine import Routine
 
 if __name__ == '__main__':
-    directory = Path(__file__).parent.parent.resolve()
+    """
+    In this demo script, we build and run our ``Routine`` component.
+    This component wraps up a common code pipeline: from data loading to model training
+    """
 
-    setup_registry(directory=directory,
+    setup_registry(directory=Path(__file__).parent.parent.resolve(),
                    registrations_to_file=True)
-
-    logging_utility.logger.info(f'Directory: {directory}')
 
     # Routine
     routine = Routine.build_component(name='routine',

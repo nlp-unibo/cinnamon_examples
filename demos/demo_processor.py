@@ -6,9 +6,13 @@ from cinnamon_generic.components.data_loader import DataLoader
 from cinnamon_generic.components.processor import Processor
 
 if __name__ == '__main__':
-    directory = Path(__file__).parent.parent.resolve()
+    """
+    In this demo script, we retrieve and build our IMDB data loader and input processor components.
+    We first load the IMDB data via the related data loader and subsequently process the data via the processors.
+    You may notice that processors modify input data in-place.
+    """
 
-    setup_registry(directory=directory,
+    setup_registry(directory=Path(__file__).parent.parent.resolve(),
                    registrations_to_file=True)
 
     # DataLoader (dl)

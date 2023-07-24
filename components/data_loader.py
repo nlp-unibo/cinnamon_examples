@@ -21,19 +21,27 @@ class ExampleLoader(DataLoader):
         # Update directory paths
         file_manager = FileManager.retrieve_built_component_from_key(self.file_manager_key)
 
-        self.download_path = file_manager.run(filepath=self.download_directory).joinpath(self.download_filename)
+        self.download_directory = file_manager.dataset_directory.joinpath(self.download_directory)
+        self.download_path = self.download_directory.joinpath(self.download_filename)
         self.extraction_path = self.download_path.parents[0]
         self.dataframe_path = self.extraction_path.joinpath('dataset.csv')
 
     def download(
             self
     ):
-        request.urlretrieve(self.data_url, self.download_path)
+        if not self.download_directory.exists():
+            self.download_directory.mkdir(parents=True)
 
-        logging_utility.logger.info('Download complete...Extracting files...')
+        # Download
+        if not self.download_path.exists():
+            request.urlretrieve(self.data_url, self.download_path)
+
+        # Extract
         with tarfile.open(self.download_path) as loaded_tar:
             loaded_tar.extractall(self.extraction_path)
-        logging_utility.logger.info('Extraction complete...')
+
+        # Clean
+        self.download_path.unlink()
 
     def read_df_from_files(
             self
@@ -77,7 +85,7 @@ class ExampleLoader(DataLoader):
     def load_data(
             self
     ) -> pd.DataFrame:
-        if not self.download_path.is_file():
+        if not self.dataframe_path.is_file():
             logging_utility.logger.info('First time loading dataset...Downloading...')
             self.download()
             df = self.read_df_from_files()
@@ -110,14 +118,14 @@ class ExampleLoader(DataLoader):
             return data
 
         return_field = FieldDict()
-        return_field.add_short(name='text',
-                               value=data['text'].values,
-                               type_hint=Iterable[str],
-                               tags={'text'},
-                               description='Input text to classify')
-        return_field.add_short(name='sentiment',
-                               value=data['sentiment'].values,
-                               type_hint=Iterable[str],
-                               tags={'label'},
-                               description='Sentiment associated to text')
+        return_field.add(name='text',
+                         value=data['text'].values,
+                         type_hint=Iterable[str],
+                         tags={'text'},
+                         description='Input text to classify')
+        return_field.add(name='sentiment',
+                         value=data['sentiment'].values,
+                         type_hint=Iterable[str],
+                         tags={'label'},
+                         description='Sentiment associated to text')
         return return_field

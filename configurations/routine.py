@@ -40,8 +40,8 @@ class ExampleRoutineConfig(RoutineConfig):
 
 @register
 def register_routines():
-    Registry.register_and_bind(configuration_class=ExampleRoutineConfig,
-                               component_class=TrainAndTestRoutine,
-                               name='routine',
-                               tags={'train_and_test'},
-                               namespace='examples')
+    Registry.add_and_bind(config_class=ExampleRoutineConfig,
+                          component_class=TrainAndTestRoutine,
+                          name='routine',
+                          tags={'train_and_test'},
+                          namespace='examples')
