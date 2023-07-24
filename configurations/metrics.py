@@ -54,6 +54,11 @@ def register_metrics_configurations():
                                   RegistrationKey(name='metrics', tags={'binary_f1'}, namespace='examples'),
                                   RegistrationKey(name='metrics', tags={'macro_f1'}, namespace='examples'),
                                   RegistrationKey(name='metrics', tags={'accuracy'}, namespace='examples')
+                              ],
+                              'names': [
+                                  'binary_f1',
+                                  'macro_f1',
+                                  'accuracy'
                               ]
                           },
                           component_class=MetricPipeline,

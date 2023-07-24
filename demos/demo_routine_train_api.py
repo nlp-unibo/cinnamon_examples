@@ -15,7 +15,7 @@ if __name__ == '__main__':
                    registrations_to_file=True)
 
     cmd_config = Registry.build_configuration(name='command',
-                                              tags={'imdb', 'routine'},
+                                              tags={'imdb', 'routine', 'train'},
                                               namespace='examples')
     result = routine_train(name=cmd_config.name,
                            tags=cmd_config.tags,

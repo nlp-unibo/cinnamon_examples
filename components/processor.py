@@ -1,5 +1,5 @@
 import itertools
-from typing import Optional
+from typing import Optional, Dict
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import LabelEncoder
@@ -17,6 +17,14 @@ class TfIdfProcessor(Processor):
     ):
         super().__init__(**kwargs)
         self.vectorizer = TfidfVectorizer(ngram_range=self.ngram_range)
+
+    def prepare_save_data(
+            self
+    ) -> Dict:
+        data = super().prepare_save_data()
+
+        data['vectorizer'] = self.vectorizer
+        return data
 
     def process(
             self,
@@ -42,6 +50,14 @@ class LabelProcessor(Processor):
     ):
         super().__init__(**kwargs)
         self.encoders = dict()
+
+    def prepare_save_data(
+            self
+    ) -> Dict:
+        data = super().prepare_save_data()
+
+        data['encoders'] = self.encoders
+        return data
 
     def process(
             self,

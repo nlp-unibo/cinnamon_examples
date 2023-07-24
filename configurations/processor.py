@@ -51,6 +51,11 @@ def register_processors():
                                   RegistrationKey(name='processor', tags={'default', 'tf-idf'}, namespace='examples'),
                                   RegistrationKey(name='processor', tags={'default', 'label'}, namespace='examples'),
                                   RegistrationKey(name='processor', tags={'default', 'ml'}, namespace='examples')
+                              ],
+                              'names': [
+                                  'text_processor',
+                                  'label_processor',
+                                  'ml_processor'
                               ]
                           },
                           component_class=ProcessorPipeline,

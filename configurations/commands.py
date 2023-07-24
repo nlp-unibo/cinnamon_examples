@@ -1,5 +1,5 @@
 from cinnamon_core.core.registry import register, Registry
-from cinnamon_generic.configurations.commands import ComponentRunConfig
+from cinnamon_generic.configurations.commands import ComponentRunConfig, RoutineInferenceConfig
 
 
 @register
@@ -32,4 +32,17 @@ def register_command_configurations():
                                },
                                name='command',
                                namespace='examples',
-                               tags={'imdb', 'routine'})
+                               tags={'imdb', 'routine', 'train'})
+
+    Registry.add_configuration(config_class=RoutineInferenceConfig,
+                               config_constructor=RoutineInferenceConfig.get_delta_class_copy,
+                               config_kwargs={
+                                   'params': {
+                                       'namespace': 'examples',
+                                       'tags': {'train_and_test'},
+                                       'run_name': 'imdb_svm'
+                                   }
+                               },
+                               name='command',
+                               namespace='examples',
+                               tags={'imdb', 'routine', 'inference'})
