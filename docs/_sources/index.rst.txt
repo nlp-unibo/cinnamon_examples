@@ -18,7 +18,7 @@ In particular, we'll see how
 We consider the IMDB data to perform a binary classification for sentiment analysis.
 
 ===============================================
-Use
+Usage
 ===============================================
 
 Want to use the ``Component`` and ``Configuration`` of this example project?

@@ -87,9 +87,10 @@ We can now write a script to test our custom routine.
         setup_registry(directory=Path(__file__).parent.parent.resolve(),
                        registrations_to_file=True)
 
-        cmd_config = Registry.build_configuration(name='command',
-                                                  tags={'imdb', 'routine', 'train'},
-                                                  namespace='examples')
+        runner = Registry.build_component(name='command',
+                                          tags={'imdb', 'routine', 'train'},
+                                          namespace='examples')
+        cmd_config = runner.run()
         result = routine_train(name=cmd_config.name,
                                tags=cmd_config.tags,
                                namespace=cmd_config.namespace,

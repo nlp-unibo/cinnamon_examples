@@ -13,9 +13,11 @@ if __name__ == '__main__':
     setup_registry(directory=Path(__file__).parent.parent.resolve(),
                    registrations_to_file=True)
 
-    cmd_config = Registry.build_configuration(name='command',
-                                              tags={'imdb', 'routine', 'inference'},
-                                              namespace='examples')
+    runner = Registry.build_component(name='command',
+                                      tags={'imdb', 'routine', 'inference'},
+                                      namespace='examples')
+
+    cmd_config = runner.run()
     result = routine_inference(routine_path=cmd_config.routine_path,
                                namespace=cmd_config.namespace,
                                serialize=False,

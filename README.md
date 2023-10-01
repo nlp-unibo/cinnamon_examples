@@ -11,7 +11,11 @@ In particular, we'll see how
 
 We consider the IMDB data to perform a binary classification for sentiment analysis.
 
-## Use
+## Documentation
+
+Check the online documentation of [cinnamon-examples](https://nlp-unibo.github.io/cinnamon_examples) for a detailed walkthrough on the project.
+
+## Usage
 
 Want to use the ``Component`` and ``Configuration`` of this example project?
 

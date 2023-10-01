@@ -135,6 +135,13 @@
                 
 
                     <li class="nav-item">
+                      <a class="nav-link nav-internal" href="processor.html">
+                        Processor
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
                       <a class="nav-link nav-internal" href="model.html">
                         Model
                       </a>
@@ -234,6 +241,13 @@ document.write(`
                     <li class="nav-item">
                       <a class="nav-link nav-internal" href="data_loader.html">
                         Data Loader
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="processor.html">
+                        Processor
                       </a>
                     </li>
                 
@@ -394,7 +408,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">cinnamon_generic.api.commands</span> <span class="kn">import</span> <span class="n">setup_registry</span><span class="p">,</span> <span class="n">routine_train</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This demo script is the cinnamon command-compliant version of ``demo_routine.py``.</span>
 <span class="sd">    We can use the ``routine_train`` command to run the training phase of a routine.</span>
 <span class="sd">    We make use of command configurations (see ``configurations/commands.py``) to quickly load our command configuration.</span>
@@ -403,9 +417,10 @@ document.write(`
     <span class="n">setup_registry</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">resolve</span><span class="p">(),</span>
                    <span class="n">registrations_to_file</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="n">cmd_config</span> <span class="o">=</span> <span class="n">Registry</span><span class="o">.</span><span class="n">build_configuration</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;command&#39;</span><span class="p">,</span>
-                                              <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;imdb&#39;</span><span class="p">,</span> <span class="s1">&#39;routine&#39;</span><span class="p">,</span> <span class="s1">&#39;train&#39;</span><span class="p">},</span>
-                                              <span class="n">namespace</span><span class="o">=</span><span class="s1">&#39;examples&#39;</span><span class="p">)</span>
+    <span class="n">runner</span> <span class="o">=</span> <span class="n">Registry</span><span class="o">.</span><span class="n">build_component</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;command&#39;</span><span class="p">,</span>
+                                      <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;imdb&#39;</span><span class="p">,</span> <span class="s1">&#39;routine&#39;</span><span class="p">,</span> <span class="s1">&#39;train&#39;</span><span class="p">},</span>
+                                      <span class="n">namespace</span><span class="o">=</span><span class="s1">&#39;examples&#39;</span><span class="p">)</span>
+    <span class="n">cmd_config</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">routine_train</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">cmd_config</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                            <span class="n">tags</span><span class="o">=</span><span class="n">cmd_config</span><span class="o">.</span><span class="n">tags</span><span class="p">,</span>
                            <span class="n">namespace</span><span class="o">=</span><span class="n">cmd_config</span><span class="o">.</span><span class="n">namespace</span><span class="p">,</span>
