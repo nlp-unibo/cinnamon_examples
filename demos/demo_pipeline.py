@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from cinnamon_core.registry import Registry
-from components.data_loader import IMDBLoader
+from components.pipeline import SVCPipeline
 
 if __name__ == '__main__':
     """
@@ -11,8 +11,7 @@ if __name__ == '__main__':
     directory = Path(__file__).parent.parent.resolve()
     Registry.setup(directory=directory)
 
-    loader = IMDBLoader.build_component(name='data_loader',
-                                        tags={'imdb'},
-                                        namespace='examples')
-    df = loader.load_data()
-    print(df)
+    pipeline = SVCPipeline.build_component(name='pipeline',
+                                           tags={'svc'},
+                                           namespace='examples')
+    pipeline.run()

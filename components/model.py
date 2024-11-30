@@ -1,98 +1,59 @@
-from pathlib import Path
-from typing import AnyStr, Any, Optional, Union, Dict
+from typing import Any, Optional, Dict, Tuple
 
+from sklearn.metrics import f1_score, accuracy_score
 from sklearn.svm import SVC
 
-from cinnamon_core.core.data import FieldDict
-from cinnamon_core.utility.pickle_utility import save_pickle, load_pickle
-from cinnamon_generic.components.callback import Callback
-from cinnamon_generic.components.metrics import Metric
-from cinnamon_generic.components.model import Model
-from cinnamon_generic.components.processor import Processor
+from cinnamon_core.component import Component
 
 
-class ExampleModel(Model):
+class SVCModel(Component):
 
-    def save_model(
+    def __init__(
             self,
-            filepath: Union[AnyStr, Path],
+            C: float,
+            kernel: str,
+            class_weight: Optional[str] = 'balanced'
     ):
-        filepath = Path(filepath) if type(filepath) != Path else filepath
-        save_pickle(filepath=filepath.joinpath('model.pkl'),
-                    data=self.model)
+        self.C = C
+        self.kernel = kernel
+        self.class_weight = class_weight
 
-    def load_model(
-            self,
-            filepath: Union[AnyStr, Path],
-    ) -> Any:
-        filepath = Path(filepath) if type(filepath) != Path else filepath
-        return load_pickle(filepath=filepath.joinpath('model.pkl'))
-
-    def build(
-            self,
-            processor: Processor,
-            callbacks: Optional[Callback] = None
-    ):
         self.model = SVC(C=self.C,
                          kernel=self.kernel,
                          class_weight=self.class_weight)
 
-    def predict(
-            self,
-            data: FieldDict,
-            callbacks: Optional[Callback] = None,
-            metrics: Optional[Metric] = None,
-            model_processor: Optional[Processor] = None,
-            suffixes: Optional[Dict] = None
-    ) -> FieldDict:
-        predictions = self.model.predict(X=data.X)
-
-        return_field = FieldDict()
-        return_field.add(name='predictions',
-                         value=predictions)
-        if suffixes is not None:
-            return_field.add(name='suffixes',
-                             value=suffixes)
-
-        if 'y' in data and metrics is not None:
-            metrics_result = metrics.run(y_pred=predictions,
-                                         y_true=data.y,
-                                         as_dict=True)
-            return_field.add(name='metrics',
-                             value=metrics_result)
-
-        return return_field
-
     def fit(
             self,
-            train_data: FieldDict,
-            val_data: Optional[FieldDict] = None,
-            metrics: Optional[Metric] = None,
-            callbacks: Optional[Callback] = None,
-            model_processor: Optional[Processor] = None
-    ) -> FieldDict:
-        self.model.fit(X=train_data.X, y=train_data.y)
+            x_train: Any,
+            y_train: Any,
+            x_val: Optional[Any] = None,
+            y_val: Optional[Any] = None,
+    ) -> Tuple[Dict[str, float], Optional[Dict[str, float]]]:
+        self.model.fit(X=x_train, y=y_train)
+        train_info = self.evaluate(x=x_train, y=y_train)
 
-        return_field = FieldDict()
+        if x_val is not None:
+            val_info = self.evaluate(x=x_val, y=y_val)
+            return train_info, val_info
 
-        if val_data is not None:
-            val_info = self.evaluate(data=val_data,
-                                     callbacks=callbacks,
-                                     metrics=metrics)
-            return_field.add(name='val_info',
-                             value=val_info)
-        return return_field
+        return train_info, None
 
     def evaluate(
             self,
-            data: FieldDict,
-            callbacks: Optional[Callback] = None,
-            metrics: Optional[Metric] = None,
-            model_processor: Optional[Processor] = None,
-            suffixes: Optional[Dict] = None
-    ) -> FieldDict:
-        return self.predict(data=data,
-                            callbacks=callbacks,
-                            metrics=metrics,
-                            model_processor=model_processor,
-                            suffixes=suffixes)
+            x: Any,
+            y: Any
+    ) -> Dict[str, float]:
+        predictions = self.predict(x=x)
+        f1 = f1_score(y_pred=predictions, y_true=y)
+        acc = accuracy_score(y_pred=predictions, y_true=y)
+
+        return {
+            'f1': f1,
+            'acc': acc
+        }
+
+    def predict(
+            self,
+            x: Any
+    ) -> Any:
+        return self.model.predict(X=x)

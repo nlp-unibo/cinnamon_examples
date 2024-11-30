@@ -1,17 +1,17 @@
 from typing import Optional
 
-from cinnamon_core.core.configuration import Configuration
-from cinnamon_core.core.registry import Registry, register
-from components.model import ExampleModel
+from cinnamon_core.configuration import Configuration
+from cinnamon_core.registry import Registry, register
+from components.model import SVCModel
 
 
-class ExampleModelConfig(Configuration):
+class SVCModelConfig(Configuration):
 
     @classmethod
-    def get_default(
+    def default(
             cls
     ):
-        config = super().get_default()
+        config = super().default()
 
         config.add(name='C',
                    value=1.0,
@@ -33,9 +33,8 @@ class ExampleModelConfig(Configuration):
 
 @register
 def register_models():
-    Registry.add_and_bind(config_class=ExampleModelConfig,
-                          component_class=ExampleModel,
-                          name='model',
-                          tags={'svm'},
-                          is_default=True,
-                          namespace='examples')
+    Registry.register_configuration(config_class=SVCModelConfig,
+                                    component_class=SVCModel,
+                                    name='model',
+                                    tags={'svc'},
+                                    namespace='examples')

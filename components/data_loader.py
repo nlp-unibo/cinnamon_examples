@@ -1,30 +1,46 @@
 import tarfile
-from typing import Tuple, Optional, Iterable
-from urllib import request
+from pathlib import Path
+from typing import Tuple, Optional
+from urllib.request import urlretrieve
 
 import pandas as pd
+from tqdm import tqdm
 
-from cinnamon_core.core.data import FieldDict
-from cinnamon_core.utility import logging_utility
-from cinnamon_generic.components.data_loader import DataLoader
-from cinnamon_generic.components.file_manager import FileManager
+from cinnamon_core.component import Component
 
 
-class ExampleLoader(DataLoader):
+class DownloadProgressBar(tqdm):
+    def update_to(self, b=1, bsize=1, tsize=None):
+        if tsize is not None:
+            self.total = tsize
+        self.update(b * bsize - self.n)
+
+
+def download_url(download_path: Path, url: str):
+    with DownloadProgressBar(unit='B', unit_scale=True,
+                             miniters=1, desc=url.split('/')[-1]) as t:
+        urlretrieve(url, filename=download_path, reporthook=t.update_to)
+
+
+class IMDBLoader(Component):
 
     def __init__(
             self,
-            **kwargs
+            download_directory: Path,
+            download_filename: str,
+            dataset_name: str,
+            download_url: str,
+            samples_amount: int = -1
     ):
-        super().__init__(**kwargs)
+        self.download_directory = download_directory
+        self.download_filename = download_filename
+        self.dataset_name = dataset_name
+        self.download_url = download_url
+        self.samples_amount = samples_amount
 
-        # Update directory paths
-        file_manager = FileManager.retrieve_built_component_from_key(self.file_manager_key)
-
-        self.download_directory = file_manager.dataset_directory.joinpath(self.download_directory)
-        self.download_path = self.download_directory.joinpath(self.download_filename)
+        self.download_path = download_directory.joinpath(download_filename)
         self.extraction_path = self.download_path.parents[0]
-        self.dataframe_path = self.extraction_path.joinpath('dataset.csv')
+        self.dataframe_path = self.extraction_path.joinpath(dataset_name)
 
     def download(
             self
@@ -34,7 +50,7 @@ class ExampleLoader(DataLoader):
 
         # Download
         if not self.download_path.exists():
-            request.urlretrieve(self.data_url, self.download_path)
+            download_url(url=self.download_url, download_path=self.download_path)
 
         # Extract
         with tarfile.open(self.download_path) as loaded_tar:
@@ -76,6 +92,7 @@ class ExampleLoader(DataLoader):
                  "sentiment",
                  "split",
                  "text"]]
+        df = df.rename(columns={'sentiment': 'y', 'text': 'x'})
 
         # Save dataframe for quick retrieval
         df.to_csv(path_or_buf=self.dataframe_path, index=None)
@@ -86,15 +103,15 @@ class ExampleLoader(DataLoader):
             self
     ) -> pd.DataFrame:
         if not self.dataframe_path.is_file():
-            logging_utility.logger.info('First time loading dataset...Downloading...')
+            print('First time loading dataset...Downloading...')
             self.download()
             df = self.read_df_from_files()
         else:
             if self.dataframe_path.is_file():
-                logging_utility.logger.info('Loaded pre-loaded dataset...')
+                print('Loaded pre-loaded dataset...')
                 df = pd.read_csv(self.dataframe_path)
             else:
-                logging_utility.logger.info("Couldn't find pre-loaded dataset...Building dataset from files...")
+                print("Couldn't find pre-loaded dataset...Building dataset from files...")
                 df = self.read_df_from_files()
                 df.to_csv(self.dataframe_path, index=False)
 
@@ -109,23 +126,3 @@ class ExampleLoader(DataLoader):
         test = df[df.split == 'test'].sample(frac=1).reset_index(drop=True)[:self.samples_amount]
 
         return train, val, test
-
-    def parse(
-            self,
-            data: Optional[pd.DataFrame] = None,
-    ) -> Optional[FieldDict]:
-        if data is None:
-            return data
-
-        return_field = FieldDict()
-        return_field.add(name='text',
-                         value=data['text'].values,
-                         type_hint=Iterable[str],
-                         tags={'text'},
-                         description='Input text to classify')
-        return_field.add(name='sentiment',
-                         value=data['sentiment'].values,
-                         type_hint=Iterable[str],
-                         tags={'label'},
-                         description='Sentiment associated to text')
-        return return_field
