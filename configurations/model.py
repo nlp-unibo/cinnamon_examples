@@ -1,7 +1,7 @@
 from typing import Optional
 
-from cinnamon_core.configuration import Configuration
-from cinnamon_core.registry import Registry, register
+from cinnamon.configuration import Configuration
+from cinnamon.registry import Registry, register
 from components.model import SVCModel
 
 

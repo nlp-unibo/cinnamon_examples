@@ -6,7 +6,7 @@ from urllib.request import urlretrieve
 import pandas as pd
 from tqdm import tqdm
 
-from cinnamon_core.component import Component
+from cinnamon.component import Component
 
 
 class DownloadProgressBar(tqdm):

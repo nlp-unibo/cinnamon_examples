@@ -1,4 +1,4 @@
-from cinnamon_core.component import Component
+from cinnamon.component import Component
 from components.data_loader import IMDBLoader
 from components.model import SVCModel
 from components.processor import TfIdfProcessor, LabelProcessor

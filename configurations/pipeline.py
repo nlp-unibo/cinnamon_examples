@@ -1,5 +1,5 @@
-from cinnamon_core.configuration import Configuration
-from cinnamon_core.registry import Registry, register, RegistrationKey
+from cinnamon.configuration import Configuration
+from cinnamon.registry import Registry, register, RegistrationKey
 from components.pipeline import SVCPipeline
 
 

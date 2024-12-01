@@ -1,8 +1,8 @@
 from pathlib import Path
 from typing import AnyStr, Union
 
-from cinnamon_core.configuration import Configuration
-from cinnamon_core.registry import Registry, register
+from cinnamon.configuration import Configuration
+from cinnamon.registry import Registry, register
 from components.data_loader import IMDBLoader
 
 

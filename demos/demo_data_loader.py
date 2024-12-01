@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from cinnamon_core.registry import Registry
+from cinnamon.registry import Registry
 from components.data_loader import IMDBLoader
 
 if __name__ == '__main__':

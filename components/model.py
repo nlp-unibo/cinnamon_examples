@@ -3,7 +3,7 @@ from typing import Any, Optional, Dict, Tuple
 from sklearn.metrics import f1_score, accuracy_score
 from sklearn.svm import SVC
 
-from cinnamon_core.component import Component
+from cinnamon.component import Component
 
 
 class SVCModel(Component):

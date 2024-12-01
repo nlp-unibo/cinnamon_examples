@@ -5,7 +5,7 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import LabelEncoder
 
-from cinnamon_core.component import Component
+from cinnamon.component import Component
 
 
 class TfIdfProcessor(Component):
