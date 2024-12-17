@@ -2,13 +2,17 @@ from pathlib import Path
 from typing import AnyStr, Union
 
 from cinnamon.configuration import Configuration
-from cinnamon.registry import Registry, register
+from cinnamon.registry import register_method
 from components.data_loader import IMDBLoader
 
 
 class IMDBLoaderConfig(Configuration):
 
     @classmethod
+    @register_method(name='data_loader',
+                     tags={'imdb'},
+                     namespace='examples',
+                     component_class=IMDBLoader)
     def default(
             cls
     ):
@@ -39,12 +43,3 @@ class IMDBLoaderConfig(Configuration):
                    description='Number of samples per split to consider at maximum')
 
         return config
-
-
-@register
-def register_data_loaders():
-    Registry.register_configuration(config_class=IMDBLoaderConfig,
-                                    component_class=IMDBLoader,
-                                    name='data_loader',
-                                    tags={'imdb'},
-                                    namespace='examples')

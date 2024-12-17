@@ -1,13 +1,18 @@
 from typing import Optional
 
 from cinnamon.configuration import Configuration
-from cinnamon.registry import Registry, register
+from cinnamon.registry import register_method
+
 from components.model import SVCModel
 
 
 class SVCModelConfig(Configuration):
 
     @classmethod
+    @register_method(name='model',
+                     tags={'svc'},
+                     namespace='examples',
+                     component_class=SVCModel)
     def default(
             cls
     ):
@@ -29,12 +34,3 @@ class SVCModelConfig(Configuration):
                                ' its class distribution')
 
         return config
-
-
-@register
-def register_models():
-    Registry.register_configuration(config_class=SVCModelConfig,
-                                    component_class=SVCModel,
-                                    name='model',
-                                    tags={'svc'},
-                                    namespace='examples')
