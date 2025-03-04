@@ -2,6 +2,7 @@ from typing import Optional
 
 from cinnamon.configuration import Configuration
 from cinnamon.registry import register_method
+
 from components.model import SVCModel
 
 
