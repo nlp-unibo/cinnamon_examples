@@ -4,7 +4,7 @@ from components.model import SVCModel
 from components.processor import TfIdfProcessor, LabelProcessor
 
 
-class SVCPipeline(Component):
+class SVCBenchmark(Component):
 
     def __init__(
             self,

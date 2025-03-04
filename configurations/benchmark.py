@@ -1,11 +1,15 @@
 from cinnamon.configuration import Configuration
-from cinnamon.registry import Registry, register, RegistrationKey
-from components.pipeline import SVCPipeline
+from cinnamon.registry import register_method, RegistrationKey
+from components.benchmark import SVCBenchmark
 
 
 class SVCPipelineConfig(Configuration):
 
     @classmethod
+    @register_method(name='benchmark',
+                     tags={'svc'},
+                     namespace='examples',
+                     component_class=SVCBenchmark)
     def default(
             cls
     ):
@@ -31,12 +35,3 @@ class SVCPipelineConfig(Configuration):
                                          namespace='examples'))
 
         return config
-
-
-@register
-def register_routines():
-    Registry.register_configuration(config_class=SVCPipelineConfig,
-                                    component_class=SVCPipeline,
-                                    name='pipeline',
-                                    tags={'svc'},
-                                    namespace='examples')

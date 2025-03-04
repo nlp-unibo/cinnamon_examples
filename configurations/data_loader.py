@@ -2,13 +2,17 @@ from pathlib import Path
 from typing import AnyStr, Union
 
 from cinnamon.configuration import Configuration
-from cinnamon.registry import Registry, register
+from cinnamon.registry import register_method
 from components.data_loader import IMDBLoader
 
 
 class IMDBLoaderConfig(Configuration):
 
     @classmethod
+    @register_method(name='data_loader',
+                     tags={'imdb'},
+                     namespace='examples',
+                     component_class=IMDBLoader)
     def default(
             cls
     ):
@@ -17,18 +21,15 @@ class IMDBLoaderConfig(Configuration):
         config.add(name='download_directory',
                    value=Path(__file__).resolve().parent.parent.joinpath('datasets'),
                    type_hint=Path,
-                   description='Folder the archive file is downloaded',
-                   is_required=True)
+                   description='Folder the archive file is downloaded')
         config.add(name='download_filename',
                    value='imdb.tar.gz',
                    type_hint=str,
-                   description='Name of the archive file',
-                   is_required=True)
+                   description='Name of the archive file')
         config.add(name='dataset_name',
                    value='dataset.csv',
                    type_hint=str,
-                   description='.csv filename',
-                   is_required=True)
+                   description='.csv filename')
         config.add(name='download_url',
                    value='http://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz',
                    type_hint=Union[AnyStr, Path],
@@ -39,12 +40,3 @@ class IMDBLoaderConfig(Configuration):
                    description='Number of samples per split to consider at maximum')
 
         return config
-
-
-@register
-def register_data_loaders():
-    Registry.register_configuration(config_class=IMDBLoaderConfig,
-                                    component_class=IMDBLoader,
-                                    name='data_loader',
-                                    tags={'imdb'},
-                                    namespace='examples')

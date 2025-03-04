@@ -1,17 +1,18 @@
 from pathlib import Path
 
 from cinnamon.registry import Registry
-from components.pipeline import SVCPipeline
+from components.benchmark import SVCBenchmark
 
 if __name__ == '__main__':
     """
     In this demo script, we retrieve and build our SVC pipeline.
     The pipeline covers data loading, data processing, and model evaluation.
     """
+
     directory = Path(__file__).parent.parent.resolve()
     Registry.setup(directory=directory)
 
-    pipeline = SVCPipeline.build_component(name='pipeline',
-                                           tags={'svc'},
-                                           namespace='examples')
-    pipeline.run()
+    benchmark = SVCBenchmark.build_component(name='benchmark',
+                                             tags={'svc'},
+                                             namespace='examples')
+    benchmark.run()

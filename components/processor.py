@@ -1,4 +1,3 @@
-import itertools
 from typing import Optional, Any
 
 import pandas as pd
