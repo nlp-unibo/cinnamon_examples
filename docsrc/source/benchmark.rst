@@ -1,4 +1,4 @@
-.. _routine:
+.. _benchmark:
 
 Defining a ``Benchmark``
 *************************************

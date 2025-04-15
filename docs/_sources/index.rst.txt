@@ -10,7 +10,7 @@
    :caption: Contents:
    :titlesonly:
 
-   Quickstart <quickstart.rst>
+   Overview <overview.rst>
    Data Loader <data_loader.rst>
    Processor  <processor.rst>
    Model <model.rst>
