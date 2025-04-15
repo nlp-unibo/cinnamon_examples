@@ -3,7 +3,7 @@ from cinnamon.registry import register_method, RegistrationKey
 from components.benchmark import SVCBenchmark
 
 
-class SVCPipelineConfig(Configuration):
+class SVCBenchmarkConfig(Configuration):
 
     @classmethod
     @register_method(name='benchmark',

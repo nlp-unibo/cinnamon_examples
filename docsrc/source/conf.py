@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'Cinnamon Examples'
-copyright = '2023, Federico Ruggeri'
+copyright = '2025, Federico Ruggeri'
 author = 'Federico Ruggeri'
 release = '0.1'
 
@@ -51,6 +51,6 @@ exclude_patterns = []
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_title = 'Cinnamon Examples'
-html_theme = 'pydata_sphinx_theme'
+html_theme = 'sphinx_rtd_theme'
 # html_theme_path = [sphinx_pdj_theme.get_html_theme_path()]
 html_static_path = ['_static']

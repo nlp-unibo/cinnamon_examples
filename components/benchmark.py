@@ -1,10 +1,14 @@
-from cinnamon.component import Component
+from cinnamon.component import RunnableComponent
 from components.data_loader import IMDBLoader
 from components.model import SVCModel
 from components.processor import TfIdfProcessor, LabelProcessor
+import cinnamon.configuration
+
+from typing import Optional
+import logging
 
 
-class SVCBenchmark(Component):
+class SVCBenchmark(RunnableComponent):
 
     def __init__(
             self,
@@ -19,8 +23,11 @@ class SVCBenchmark(Component):
         self.label_processor = label_processor
 
     def run(
-            self
+            self,
+            config: Optional[cinnamon.configuration.Configuration] = None
     ):
+        logging.basicConfig()
+
         train_df, val_df, test_df = self.data_loader.get_splits()
 
         x_train = self.text_processor.process(data=train_df, is_training_data=True)
@@ -36,6 +43,6 @@ class SVCBenchmark(Component):
                                               x_val=x_val, y_val=y_val)
         test_info = self.model.evaluate(x=x_test, y=y_test)
 
-        print(f'Train info:\n{train_info}')
-        print(f'Val info:\n{val_info}')
-        print(f'Test info:\n{test_info}')
+        logging.info(f'Train info:\n{train_info}')
+        logging.info(f'Val info:\n{val_info}')
+        logging.info(f'Test info:\n{test_info}')

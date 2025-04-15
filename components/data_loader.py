@@ -6,23 +6,31 @@ from urllib.request import urlretrieve
 import pandas as pd
 from tqdm import tqdm
 
-from cinnamon.component import Component
+import cinnamon.configuration
+from cinnamon.component import RunnableComponent
 
 
 class DownloadProgressBar(tqdm):
-    def update_to(self, b=1, bsize=1, tsize=None):
+    def update_to(
+            self,
+            b=1,
+            bsize=1,
+            tsize=None
+    ):
         if tsize is not None:
             self.total = tsize
         self.update(b * bsize - self.n)
 
 
-def download_url(download_path: Path, url: str):
-    with DownloadProgressBar(unit='B', unit_scale=True,
-                             miniters=1, desc=url.split('/')[-1]) as t:
+def download_url(
+        download_path: Path,
+        url: str
+):
+    with DownloadProgressBar(unit='B', unit_scale=True, miniters=1, desc=url.split('/')[-1]) as t:
         urlretrieve(url, filename=download_path, reporthook=t.update_to)
 
 
-class IMDBLoader(Component):
+class IMDBLoader(RunnableComponent):
 
     def __init__(
             self,
@@ -52,12 +60,13 @@ class IMDBLoader(Component):
         if not self.download_path.exists():
             download_url(url=self.download_url, download_path=self.download_path)
 
-        # Extract
-        with tarfile.open(self.download_path) as loaded_tar:
-            loaded_tar.extractall(self.extraction_path)
+            # Extract
+            with tarfile.open(self.download_path) as loaded_tar:
+                loaded_tar.extractall(self.extraction_path)
 
         # Clean
-        self.download_path.unlink()
+        if self.download_path.exists():
+            self.download_path.unlink()
 
     def read_df_from_files(
             self
@@ -126,3 +135,9 @@ class IMDBLoader(Component):
         test = df[df.split == 'test'].sample(frac=1).reset_index(drop=True)[:self.samples_amount]
 
         return train, val, test
+
+    def run(
+            self,
+            config: Optional[cinnamon.configuration.Configuration] = None
+    ):
+        return self.load_data()
