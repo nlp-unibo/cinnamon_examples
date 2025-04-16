@@ -1,3 +1,4 @@
+import logging
 import tarfile
 from pathlib import Path
 from typing import Tuple, Optional
@@ -112,15 +113,15 @@ class IMDBLoader(RunnableComponent):
             self
     ) -> pd.DataFrame:
         if not self.dataframe_path.is_file():
-            print('First time loading dataset...Downloading...')
+            logging.info('First time loading dataset...Downloading...')
             self.download()
             df = self.read_df_from_files()
         else:
             if self.dataframe_path.is_file():
-                print('Loaded pre-loaded dataset...')
+                logging.info('Loaded pre-loaded dataset...')
                 df = pd.read_csv(self.dataframe_path)
             else:
-                print("Couldn't find pre-loaded dataset...Building dataset from files...")
+                logging.info("Couldn't find pre-loaded dataset...Building dataset from files...")
                 df = self.read_df_from_files()
                 df.to_csv(self.dataframe_path, index=False)
 

@@ -26,7 +26,7 @@ class SVCBenchmark(RunnableComponent):
             self,
             config: Optional[cinnamon.configuration.Configuration] = None
     ):
-        logging.basicConfig()
+        logging.basicConfig(level=logging.INFO)
 
         train_df, val_df, test_df = self.data_loader.get_splits()
 
