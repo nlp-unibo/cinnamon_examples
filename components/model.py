@@ -44,7 +44,7 @@ class SVCModel(Component):
             y: Any
     ) -> Dict[str, float]:
         predictions = self.predict(x=x)
-        f1 = f1_score(y_pred=predictions, y_true=y).item()
+        f1 = f1_score(y_pred=predictions, y_true=y)
         acc = accuracy_score(y_pred=predictions, y_true=y)
 
         return {
